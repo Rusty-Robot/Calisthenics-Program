@@ -5,13 +5,13 @@ const CACHE_NAME = `calisthenics-${CACHE_VERSION}`;
 
 // Files to pre-cache on install (the "app shell")
 const APP_SHELL = [
-  '/',
-  '/index.html',
-  '/CalisthenicsYearPlan.jsx',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  // CDN assets — cached so the app works fully offline after first load
+const APP_SHELL = [
+  '/Calisthenics-Program/',
+  '/Calisthenics-Program/index.html',
+  '/Calisthenics-Program/CalisthenicsYearPlan.jsx',
+  '/Calisthenics-Program/manifest.json',
+  '/Calisthenics-Program/icons/icon-192.png',
+  '/Calisthenics-Program/icons/icon-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js',
