@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- PWA meta -->
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="description" content="Year 1 Calisthenics Program — STRIQfit method, pull-up bar only. 4 days/week, 30–45 min sessions." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Calisthenics" />
+
+    <title>Year 1 Calisthenics</title>
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Apple touch icon (iOS home screen) -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
+
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        background: #0A0A0A;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overscroll-behavior: none;
+      }
+
+      #root { min-height: 100vh; min-height: 100dvh; }
+
+      /* Splash screen while Babel compiles */
+      #splash {
+        position: fixed;
+        inset: 0;
+        background: #0A0A0A;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        z-index: 9999;
+        transition: opacity 0.4s ease;
+      }
+      #splash.hidden { opacity: 0; pointer-events: none; }
+
+      #splash-title {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        color: #E8E8E8;
+        letter-spacing: -0.5px;
+      }
+      #splash-sub {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-size: 11px;
+        color: #555;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+      }
+      #splash-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #A3E635;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%       { opacity: 0.3; transform: scale(0.6); }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Splash screen (hidden once React mounts) -->
+    <div id="splash">
+      <div id="splash-dot"></div>
+      <div id="splash-title">Year 1 Calisthenics</div>
+      <div id="splash-sub">Loading program</div>
+    </div>
+
+    <!-- React mounts here -->
+    <div id="root"></div>
+
+    <!-- React 18 + ReactDOM from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"
+            crossorigin="anonymous"></script>
+
+    <!-- Babel standalone (transpiles JSX in the browser — no build step needed) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"
+            crossorigin="anonymous"></script>
+
+    <!--
+      Load the component.
+      NOTE: CalisthenicsYearPlan.jsx must have TWO small changes from the artifact version:
+        1. Replace:  import { useState } from "react";
+           With:     const { useState } = React;
+        2. Replace:  export default function CalisthenicsProgram()
+           With:     function CalisthenicsProgram()
+      These are needed because Babel standalone runs as a plain script, not an ES module.
+    -->
+    <script type="text/babel" src="CalisthenicsYearPlan.jsx" data-presets="react"></script>
+
+    <!-- Mount the app + hide splash + register SW -->
+    <script type="text/babel" data-presets="react">
+      // Mount React app
+      ReactDOM.createRoot(document.getElementById('root')).render(
+        React.createElement(CalisthenicsProgram, null)
+      );
+
+      // Hide splash once React has painted
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const splash = document.getElementById('splash');
+          if (splash) {
+            splash.classList.add('hidden');
+            setTimeout(() => splash.remove(), 400);
+          }
+        }, 200);
+      });
+
+      // Register service worker for offline support
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('sw.js')
+            .then(reg => console.log('[SW] Registered:', reg.scope))
+            .catch(err => console.warn('[SW] Registration failed:', err));
+        });
+      }
+    </script>
+
+  </body>
+</html>
